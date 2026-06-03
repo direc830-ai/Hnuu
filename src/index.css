@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-color: #0A0909;
+    color: #F2EDED;
+  }
+}
+
+/* ===== DARK MODE ===== */
+html.dark .uni-overlay {
+  background-color: rgba(2, 6, 20, 0.88) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* White content cards go dark */
+html.dark .uni-card {
+  background-color: rgba(15, 23, 42, 0.97) !important;
+  border-color: rgba(51, 65, 85, 0.6) !important;
+}
+html.dark .uni-card,
+html.dark .uni-card h1,
+html.dark .uni-card h2,
+html.dark .uni-card h3,
+html.dark .uni-card p,
+html.dark .uni-card span:not(.keep-color),
+html.dark .uni-card label {
+  color: #e2e8f0 !important;
+}
+html.dark .uni-card .text-slate-500,
+html.dark .uni-card .text-\[\#6C84A3\],
+html.dark .uni-card .text-\[\#64748B\] {
+  color: #94a3b8 !important;
+}
+
+/* Inner rows inside cards */
+html.dark .uni-row {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(71, 85, 105, 0.4) !important;
+}
+html.dark .uni-row h3 { color: #f1f5f9 !important; }
+html.dark .uni-row p  { color: #94a3b8 !important; }
+
+/* Sidebar nav */
+html.dark .uni-sidebar {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  border-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+/* Glass panel */
+html.dark .uni-glass {
+  background-color: rgba(10, 18, 35, 0.75) !important;
+}
+
+/* Right panel on maps */
+html.dark .uni-right-panel {
+  background-color: #1a2744 !important;
+}
+html.dark .uni-right-panel h2,
+html.dark .uni-right-panel p,
+html.dark .uni-right-panel span {
+  color: #c7d8f0 !important;
+}
+
+/* Smooth transitions for all elements */
+*, *::before, *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease;
+}
