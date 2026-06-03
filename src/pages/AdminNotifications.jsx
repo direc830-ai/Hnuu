@@ -5,7 +5,6 @@ import { supabase } from '../lib/supabase';
 const AdminNotifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
 
   const iconByType = useMemo(() => ({
     security: ShieldAlert,
@@ -22,61 +21,68 @@ const AdminNotifications = () => {
   }), []);
 
   useEffect(() => {
-    const load = async () => {
+    let isActive = true;
+
+    const loadNotifications = async () => {
       if (!supabase) return;
-      setLoading(true);
-      try {
-        const [recentBookingsResult, lowBalanceResult] = await Promise.all([
-          supabase.from('bookings').select('seat_id, floor, status, created_at').order('created_at', { ascending: false }).limit(10),
-          supabase.from('profiles').select('full_name, email, balance_credits').lt('balance_credits', 5).order('balance_credits', { ascending: true }).limit(5),
-        ]);
 
-        const live = [];
+      const [recentBookingsResult, lowBalanceResult] = await Promise.all([
+        supabase
+          .from('bookings')
+          .select('seat_id, floor, status, created_at')
+          .order('created_at', { ascending: false })
+          .limit(5),
+        supabase
+          .from('profiles')
+          .select('full_name, email, balance_credits')
+          .lt('balance_credits', 5)
+          .order('balance_credits', { ascending: true })
+          .limit(5),
+      ]);
 
-        (lowBalanceResult.data || []).forEach((profile, i) => {
-          live.push({
-            id: `low-balance-${i}`,
-            type: 'alert',
-            title: 'Low Balance Alert',
-            message: `${profile.full_name || profile.email} has ${profile.balance_credits ?? 0} booking credits remaining.`,
-            time: 'Live',
-            read: false,
-          });
+      if (!isActive) return;
+
+      const liveNotifications = [];
+
+      (lowBalanceResult.data || []).forEach((profile, index) => {
+        liveNotifications.push({
+          id: `low-balance-${index}`,
+          type: 'alert',
+          title: 'Low Balance Alert',
+          message: `${profile.full_name || profile.email} has ${profile.balance_credits ?? 0} booking credits remaining.`,
+          time: 'Live',
+          read: false,
         });
+      });
 
-        (recentBookingsResult.data || []).forEach((booking, i) => {
-          live.push({
-            id: `booking-${i}`,
-            type: 'info',
-            title: 'New Booking Recorded',
-            message: `Seat ${booking.seat_id} in ${booking.floor} was booked and marked ${booking.status || 'confirmed'}.`,
-            time: new Date(booking.created_at).toLocaleString(),
-            read: i > 1,
-          });
+      (recentBookingsResult.data || []).forEach((booking, index) => {
+        liveNotifications.push({
+          id: `booking-${index}`,
+          type: 'info',
+          title: 'New Booking Recorded',
+          message: `Seat ${booking.seat_id} in ${booking.floor} was booked and marked ${booking.status || 'confirmed'}.`,
+          time: new Date(booking.created_at).toLocaleString(),
+          read: index > 1,
         });
+      });
 
-        setNotifications(live);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      setNotifications(liveNotifications);
     };
-    load();
+
+    loadNotifications().catch((error) => {
+      console.error('Unable to load admin notifications', error);
+    });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
-  const markRead = (id) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  const deleteOne = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
-  const clearAll = () => setNotifications([]);
-
-  const filteredNotifications = notifications.filter((n) => {
-    if (activeFilter === 'unread') return !n.read;
-    if (activeFilter === 'security') return n.type === 'security';
+  const filteredNotifications = notifications.filter((notification) => {
+    if (activeFilter === 'unread') return !notification.read;
+    if (activeFilter === 'security') return notification.type === 'security';
     return true;
   });
-
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -86,16 +92,10 @@ const AdminNotifications = () => {
           <p className="text-slate-500 font-medium">System alerts, security warnings, and updates.</p>
         </div>
         <div className="flex gap-3">
-          <button
-            onClick={markAllRead}
-            className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-2"
-          >
+          <button className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-2">
             <Check className="w-4 h-4" /> Mark all as read
           </button>
-          <button
-            onClick={clearAll}
-            className="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl transition-all flex items-center gap-2"
-          >
+          <button className="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl transition-all flex items-center gap-2">
             <Trash2 className="w-4 h-4" /> Clear All
           </button>
         </div>
@@ -103,52 +103,42 @@ const AdminNotifications = () => {
 
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-4">
-          {['all', 'unread', 'security'].map((f) => (
-            <button key={f} onClick={() => setActiveFilter(f)}
-              className={`text-sm font-bold px-4 py-1.5 rounded-full transition-colors ${activeFilter === f ? 'text-blue-600 bg-blue-50' : 'text-slate-500 hover:text-slate-700'}`}>
-              {f === 'all' ? 'All Alerts' : f === 'unread' ? `Unread (${unreadCount})` : 'Security'}
-            </button>
-          ))}
+          <button onClick={() => setActiveFilter('all')} className={`text-sm font-bold px-4 py-1.5 rounded-full transition-colors ${activeFilter === 'all' ? 'text-blue-600 bg-blue-50' : 'text-slate-500 hover:text-slate-700'}`}>All Alerts</button>
+          <button onClick={() => setActiveFilter('unread')} className={`text-sm font-bold px-4 py-1.5 rounded-full transition-colors ${activeFilter === 'unread' ? 'text-blue-600 bg-blue-50' : 'text-slate-500 hover:text-slate-700'}`}>Unread ({notifications.filter((notification) => !notification.read).length})</button>
+          <button onClick={() => setActiveFilter('security')} className={`text-sm font-bold px-4 py-1.5 rounded-full transition-colors ${activeFilter === 'security' ? 'text-blue-600 bg-blue-50' : 'text-slate-500 hover:text-slate-700'}`}>Security</button>
         </div>
-
+        
         <div className="divide-y divide-slate-100">
-          {loading ? (
-            <div className="p-6 text-slate-400">Loading notifications...</div>
-          ) : filteredNotifications.length > 0 ? filteredNotifications.map((notif) => {
+          {filteredNotifications.length > 0 ? filteredNotifications.map((notif) => {
             const Icon = iconByType[notif.type] || Info;
             const color = colorByType[notif.type] || 'blue';
+
             return (
-              <div key={notif.id} className={`p-6 flex gap-4 transition-colors hover:bg-slate-50 ${!notif.read ? 'bg-blue-50/30' : ''}`}>
-                <div className={`w-12 h-12 shrink-0 rounded-2xl bg-${color}-100 flex items-center justify-center`}>
-                  <Icon className={`w-6 h-6 text-${color}-600`} />
+            <div key={notif.id} className={`p-6 flex gap-4 transition-colors hover:bg-slate-50 ${!notif.read ? 'bg-blue-50/30' : ''}`}>
+              <div className={`w-12 h-12 shrink-0 rounded-2xl bg-${color}-100 flex items-center justify-center`}>
+                <Icon className={`w-6 h-6 text-${color}-600`} />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className={`text-base font-bold text-slate-900 ${!notif.read ? 'flex items-center gap-2' : ''}`}>
+                      {notif.title}
+                      {!notif.read && <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>}
+                    </h3>
+                    <p className="text-slate-600 mt-1 leading-relaxed text-sm">{notif.message}</p>
+                  </div>
+                  <span className="text-xs font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                        {notif.title}
-                        {!notif.read && <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>}
-                      </h3>
-                      <p className="text-slate-600 mt-1 leading-relaxed text-sm">{notif.message}</p>
-                    </div>
-                    <span className="text-xs font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
-                  </div>
-                  <div className="mt-3 flex gap-3">
-                    {!notif.read && (
-                      <button onClick={() => markRead(notif.id)} className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">
-                        Mark as read
-                      </button>
-                    )}
-                    <button onClick={() => deleteOne(notif.id)} className="text-sm font-bold text-slate-400 hover:text-rose-600 transition-colors">
-                      Delete
-                    </button>
-                  </div>
+                <div className="mt-3 flex gap-3">
+                  {!notif.read && (
+                    <button className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">Mark as read</button>
+                  )}
+                  <button className="text-sm font-bold text-slate-400 hover:text-rose-600 transition-colors">Delete</button>
                 </div>
               </div>
+            </div>
             );
-          }) : (
-            <div className="p-6 text-slate-500 font-medium">No notifications found.</div>
-          )}
+          }) : <div className="p-6 text-slate-500 font-medium">No live notifications found.</div>}
         </div>
       </div>
     </div>

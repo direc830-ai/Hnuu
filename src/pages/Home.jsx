@@ -241,11 +241,11 @@ const UniSpacePortal = () => {
 
         {/* Map Image Viewer */}
         <div className="flex-1 bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-6 relative overflow-hidden min-h-[500px] flex items-center justify-center">
-           {activeMap === 'rasa' && <img src="/maps/0 floor.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="Rasa Map" />}
-           {activeMap === '1st_left' && <img src="/maps/1 st floor left (club's spots).jpeg" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="1st Floor Left" />}
-           {activeMap === '1st_right' && <img src="/maps/1st floor right.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="1st Floor Right" />}
-           {activeMap === '2nd' && <img src="/maps/2nd floor.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="2nd Floor" />}
-           {activeMap === '3rd' && <img src="/maps/3rd Floor.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="3rd Floor" />}
+           {activeMap === 'rasa' && <img src="/maps/0_floor.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="Rasa Map" />}
+           {activeMap === '1st_left' && <img src="/maps/first_left_spots.jpeg" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="1st Floor Left" />}
+           {activeMap === '1st_right' && <img src="/maps/first_right.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="1st Floor Right" />}
+           {activeMap === '2nd' && <img src="/maps/second_floor.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="2nd Floor" />}
+           {activeMap === '3rd' && <img src="/maps/third_floor.png" className="max-w-full max-h-full object-contain animate-in fade-in duration-500" alt="3rd Floor" />}
         </div>
       </div>
 

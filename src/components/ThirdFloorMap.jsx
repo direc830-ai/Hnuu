@@ -10,13 +10,13 @@ const ThirdFloorMap = () => {
       */}
       <div className="absolute top-0 left-0 w-full h-[115%]">
          <img 
-            src="/3rd.png" // Save your 3rd floor plan image in the public folder as 3rd.png
+            src="/maps/third_floor.png" // Save your 3rd floor plan image in the public folder as 3rd.png
             alt="3rd Floor Map" 
             className="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-[1.02]"
             onError={(e) => { 
               // Fallback to other known images if 3rd.png isn't found
               e.currentTarget.onerror = null; 
-              e.currentTarget.src = '/other.png'; 
+              e.currentTarget.src = '/maps/third_floor.png'; 
             }}
          />
       </div>

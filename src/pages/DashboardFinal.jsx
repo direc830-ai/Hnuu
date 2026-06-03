@@ -85,7 +85,7 @@ export default function Dashboard() {
     : '12:00 - 13:00';
 
   return (
-    <div className="min-h-screen bg-[url('/background%202.png')] bg-cover bg-center bg-no-repeat relative font-sans flex flex-col">
+    <div className="min-h-screen bg-[url('/background2.png')] bg-cover bg-center bg-no-repeat relative font-sans flex flex-col">
       {/* Overlay to match the blue hue from the design */}
       <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px] z-0 uni-overlay" />
 

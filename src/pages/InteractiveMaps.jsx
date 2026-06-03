@@ -226,7 +226,7 @@ export default function Maps() {
     return matchesStats && matchesSearch;
   }) ?? [];
   return (
-    <div className="min-h-screen bg-[url('/background%202.png')] bg-cover bg-center bg-no-repeat relative font-sans flex flex-col">
+    <div className="min-h-screen bg-[url('/background2.png')] bg-cover bg-center bg-no-repeat relative font-sans flex flex-col">
       <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px] z-0 uni-overlay" />
 
       {/* Top Navbar */}
