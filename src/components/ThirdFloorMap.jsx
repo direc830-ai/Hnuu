@@ -16,7 +16,7 @@ const ThirdFloorMap = () => {
             onError={(e) => { 
               // Fallback to other known images if 3rd.png isn't found
               e.currentTarget.onerror = null; 
-              e.currentTarget.src = '/maps/third_floor.png'; 
+              e.currentTarget.src = '/other.png'; 
             }}
          />
       </div>

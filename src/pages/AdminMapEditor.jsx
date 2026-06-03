@@ -5,11 +5,11 @@ const AdminMapEditor = () => {
   const [selectedMapId, setSelectedMapId] = useState(null);
 
   const maps = [
-    { id: 'rasa', name: "Rasa Map", url: "/maps/0 floor.png", description: "RASA Club's Local & Ground Floor", status: 'Published', lastUpdated: 'Today' },
-    { id: 'first_left', name: "1st Floor (Left)", url: "/maps/1 st floor left (club's spots).jpeg", description: "1st Floor Left - Club Spots & Labs", status: 'Published', lastUpdated: 'Yesterday' },
-    { id: 'first_right', name: "1st Floor (Right)", url: "/maps/1st floor right.png", description: "1st Floor Right - Classrooms", status: 'Draft', lastUpdated: 'Last Week' },
-    { id: 'second', name: "Second Floor", url: "/maps/2nd floor.png", description: "2nd Floor - Admin & Library", status: 'Published', lastUpdated: 'Oct 24, 2023' },
-    { id: 'third', name: "Third Floor", url: "/maps/3rd Floor.png", description: "3rd Floor - Study Halls", status: 'Draft', lastUpdated: 'Sep 15, 2023' }
+    { id: 'rasa', name: "Rasa Map", url: "/maps/0_floor.png", description: "RASA Club's Local & Ground Floor", status: 'Published', lastUpdated: 'Today' },
+    { id: 'first_left', name: "1st Floor (Left)", url: "/maps/first_left_spots.jpeg", description: "1st Floor Left - Club Spots & Labs", status: 'Published', lastUpdated: 'Yesterday' },
+    { id: 'first_right', name: "1st Floor (Right)", url: "/maps/first_right.png", description: "1st Floor Right - Classrooms", status: 'Draft', lastUpdated: 'Last Week' },
+    { id: 'second', name: "Second Floor", url: "/maps/second_floor.png", description: "2nd Floor - Admin & Library", status: 'Published', lastUpdated: 'Oct 24, 2023' },
+    { id: 'third', name: "Third Floor", url: "/maps/third_floor.png", description: "3rd Floor - Study Halls", status: 'Draft', lastUpdated: 'Sep 15, 2023' }
   ];
 
   const selectedMap = maps.find(m => m.id === selectedMapId);
